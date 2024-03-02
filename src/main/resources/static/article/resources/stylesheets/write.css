@@ -1,0 +1,147 @@
+@charset "UTF-8";
+
+#main > .content-container {
+    padding: 2rem 0;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: flex-start;
+}
+
+#main > .content-container > .title-container > .title {
+    font-size: 2.5rem;
+}
+
+#writeForm {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+#writeForm > .label {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
+#writeForm > .label > .text {
+    color: #808b96;
+    font-size: 1.125rem;
+}
+
+#writeForm > .file-wrapper > .files {
+    background-color: #ffffff;
+    border: 0.0625rem solid #d5d8dcc0;
+    border-radius: 0.375rem;
+    padding: 0.75rem 0.75rem;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+#writeForm > .file-wrapper > .files > .list {
+    flex: 1 1 0;
+    overflow: auto hidden;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item {
+    border: 0.0625rem solid #d5d8dcc0;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    position: relative;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item > .progress {
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: #d6eaf8;
+    position: absolute;
+    transition-duration: 100ms;
+    transition-property: width, background-color;
+    transition-timing-function: ease;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item.complete > .progress {
+    background-color: #d5f5e3;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item.error > .progress {
+    background-color: #fadbd8;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item > .text-container {
+    white-space: nowrap;
+
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    z-index: 1;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item > .text-container > .name {
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item > .text-container > .size {
+    color: #808b96;
+    font-size: 0.9rem;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item > [rel="delete"] {
+    font-size: 0.9rem;
+    padding: 0.375rem 0.5rem;
+    white-space: nowrap;
+    z-index: 1;
+
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#writeForm > .button-container {
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+#writeForm > .button-container > * {
+    color: inherit;
+    text-decoration: none;
+}
+
+#writeForm > .button-container > .spring {
+    flex: 1;
+}
+
+.ck-editor__editable_inline {
+    min-height: 20rem;
+}

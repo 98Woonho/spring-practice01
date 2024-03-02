@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="_board-status" th:content="${board != null}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시판 목록</title>
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
+    <link rel="stylesheet" th:href="@{/board/resources/stylesheets/list.css}">
+    <script defer th:src="@{/resources/scripts/common.js}"></script>
+    <script defer th:src="@{/board/resources/scripts/list.js}"></script>
+</head>
+<body>
+<th:block th:replace="~{fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments.html :: header}"></th:block>
+<main class="content-container-wrapper" id="main">
+    <div class="content-container">
+        <div class="title-container">
+            <h1 class="title" th:text="${board.getText()}"></h1>
+        </div>
+        <table class="list-table" id="listTable">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성 일시</th>
+                <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="empty" th:if="${articles.length == 0}">
+                <td colspan="5">작성된 게시글이 없습니다.</td>
+            </tr>
+            <tr th:each="article : ${articles}">
+                <td th:text="${article.getIndex()}"></td>
+                <td>
+                    <a class="link"
+                       th:href="@{/article/read (index=${article.getIndex()}, page=${page.requestPage})}"
+                       th:text="${article.getTitle()}"
+                       th:if="${searching == false}"></a>
+                    <a class="link"
+                       th:href="@{/article/read (index=${article.getIndex()}, page=${page.requestPage} ,criterion = ${search.getCriterion()}, keyword = ${search.getKeyword()})}"
+                       th:text="${article.getTitle()}"
+                       th:if="${searching == true}"></a>
+                </td>
+                <td th:text="${article.getUserNickname()}"></td>
+                <td th:text="${#dates.format(article.getWrittenAt(), 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${article.getView()}"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <div class="page-button-container">
+                        <div class="spring"></div>
+                        <th:block th:if="${searching == false}">
+                            <a class="button"
+                               th:href="@{/board/list (code=${board.getCode()}, page = ${page.pageFrom - page.pageButtonCount})}"
+                               th:if="${page.pageFrom > page.minPage}">&lt;&lt;</a>
+                            <a class="button"
+                               th:href="@{/board/list (code=${board.getCode()}, page = ${page.requestPage - 1})}"
+                               th:if="${page.requestPage > page.minPage}">&lt;</a>
+                            <!-- [공부] #numbers.sequence(a, b) : a부터 b까지의 숫자 시퀀스(배열) 생성 -->
+                            <!-- [공부] th:classappend : 클래스에 원하는 문자열을 추가해주는 th -->
+                            <a class="button"
+                               th:each="pageNumber : ${#numbers.sequence(page.pageFrom, page.pageTo)}"
+                               th:href="@{/board/list (code=${board.getCode()}, page=${pageNumber})}"
+                               th:text="${pageNumber}"
+                               th:classappend="${pageNumber == page.requestPage} ? 'selected' : ''"></a>
+                            <!-- [공부] &lt : greater than(>) -->
+                            <a class="button"
+                               th:href="@{/board/list (code=${board.getCode()}, page = ${page.requestPage + 1})}"
+                               th:if="${page.requestPage < page.maxPage}">&gt;</a>
+                            <a class="button"
+                               th:href="@{/board/list (code=${board.getCode()}, page = ${page.pageTo + 1})}"
+                               th:if="${page.pageTo < page.maxPage}">&gt;&gt;</a>
+                        </th:block>
+                        <th:block th:if="${searching == true}">
+                            <!-- [공부] &lt : less than(<) -->
+                            <a class="button"
+                               th:href="@{/board/list (code=${board.getCode()}, page = ${page.pageFrom - page.pageButtonCount}, criterion = ${search.getCriterion()}, keyword = ${search.getKeyword()})}"
+                               th:if="${page.pageFrom > page.minPage}">&lt;&lt;</a>
+                            <a class="button"
+                               th:href="@{/board/list (code=${board.getCode()}, page = ${page.requestPage - 1}, criterion = ${search.getCriterion()}, keyword = ${search.getKeyword()})}"
+                               th:if="${page.requestPage > page.minPage}">&lt;</a>
+                            <!-- [공부] #numbers.sequence(a, b) : a부터 b까지의 숫자 시퀀스(배열) 생성 -->
+                            <!-- [공부] th:classappend : 클래스에 원하는 문자열을 추가해주는 th -->
+                            <a class="button"
+                               th:each="pageNumber : ${#numbers.sequence(page.pageFrom, page.pageTo)}"
+                               th:href="@{/board/list (code=${board.getCode()}, page=${pageNumber}, criterion = ${search.getCriterion()}, keyword = ${search.getKeyword()})}"
+                               th:text="${pageNumber}"
+                               th:classappend="${pageNumber == page.requestPage} ? 'selected' : ''"></a>
+                            <!-- [공부] &lt : greater than(>) -->
+                            <a class="button"
+                               th:href="@{/board/list (code=${board.getCode()}, page = ${page.requestPage + 1}, criterion = ${search.getCriterion()}, keyword = ${search.getKeyword()})}"
+                               th:if="${page.requestPage < page.maxPage}">&gt;</a>
+                            <a class="button"
+                               th:href="@{/board/list (code=${board.getCode()}, page = ${page.pageTo + 1}, criterion = ${search.getCriterion()}, keyword = ${search.getKeyword()})}"
+                               th:if="${page.pageTo < page.maxPage}">&gt;&gt;</a>
+                        </th:block>
+                        <div class="spring"></div>
+                        <a class="common-button"
+                           th:href="@{/article/write (code = ${board.getCode()})}"
+                           th:if="${session.user != null && (!board.isAdminWrite() || session.user.isAdmin() == true)}">글쓰기</a>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <!-- [공부] 사용자가 검색어를 입력하고 제출하면 ./list로 이동하며, 검색어는 URL에 포함되어 전송 -->
+        <!-- [공부] action : 폼 데이터를 처리할 서버 측 스크립트의 URL -->
+        <!-- [공부] 예를 들어 name="criterion"에 value="content"인 상태에서 submit이 되면, GET 방식이기 때문에./list?criterion=content로 전송이 됨. -->
+        <!-- 마찬가지로 name="keyword"에 value=검색어 해서 keyword=검색어 전송 됨 -->
+        <form action="./list" method="get" id="searchForm" class="search-form">
+            <input hidden name="code" type="hidden" th:value="${board.getCode()}">
+            <label title="검색 조건" class="label">
+                <select name="criterion" class="common-field">
+                    <option th:selected="${searching == true && search.getCriterion().equals('content')}"
+                            value="content">제목 + 내용
+                    </option>
+                    <option th:selected="${searching == true && search.getCriterion().equals('title')}" value="title">제목
+                    </option>
+                    <option th:selected="${searching == true && search.getCriterion().equals('nickname')}"
+                            value="nickname">작성자
+                    </option>
+                </select>
+            </label>
+            <label title="검색어" class="label keyword">
+                <input class="common-field" maxlength="50" name="keyword" placeholder="검색어를 입력해 주세요." type="text"
+                       th:value="${searching == true ? search.getKeyword() : ''}">
+            </label>
+            <input type="submit" value="검색" class="common-button">
+            <a class="common-button" th:if="${searching == true}" th:href="@{/board/list (code = ${board.getCode()})}">검색
+                초기화</a>
+        </form>
+    </div>
+</main>
+<th:block th:replace="~{fragments.html :: footer}"></th:block>
+</body>
+</html>

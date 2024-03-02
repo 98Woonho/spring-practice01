@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whl.studybbs.mappers.UserMapper">
+
+    <insert id="insertEmailAuth" parameterType="com.whl.studybbs.entities.EmailAuthEntity">
+        INSERT INTO `study_bbs`.`email_auths` (email, code, salt, created_at, expires_at, verified_flag)
+        VALUES (#{email}, #{code}, #{salt}, #{createdAt}, #{expiresAt}, #{isVerified})
+    </insert>
+
+    <!-- selectUserByEmail 메서드가 실행되면 이 쿼리문이 실행 됨. 메서드에서 @Param으로 parameterType을 지정해주었으므로 안 적어도 됨. -->
+    <select id="selectUserByEmail"
+            resultType="com.whl.studybbs.entities.UserEntity">
+        SELECT `email`                AS `email`,
+               `password`             AS `password`,
+               `nickname`             AS `nickname`,
+               `name`                 AS `name`,
+               `contact_company_code` AS `contactCompanyCode`,
+               `contact_first`        AS `contactFisrt`,
+               `contact_second`       AS `contactSecond`,
+               `contact_third`        AS `contactThird`,
+               `address_postal`       AS `addressPostal`,
+               `address_primary`      AS `addresPrimary`,
+               `address_secondary`    AS `addressSecondary`,
+               `admin_flag`           AS `isAdmin`,
+               `deleted_flag`         AS `isDeleted`,
+               `suspended_flag`       AS `isSuspended`,
+               `registered_at`        AS `registeredAt`,
+               `term_policy_at`       AS `termPolicyAt`,
+               `term_privacy_at`      AS `termPrivacyAt`,
+               `term_marketing_at`    AS `termMarketingAt`
+        FROM `study_bbs`.`users`
+        WHERE BINARY `email` = #{email} # 중괄호 내의 email과 호출하는 메서드의 @Param의 value값과 일치해야 함.
+        LIMIT 1
+    </select>
+
+    <select id="selectUserByNickname"
+            resultType="com.whl.studybbs.entities.UserEntity">
+        SELECT `email`                AS `email`,
+               `password`             AS `password`,
+               `nickname`             AS `nickname`,
+               `name`                 AS `name`,
+               `contact_company_code` AS `contactCompanyCode`,
+               `contact_first`        AS `contactFisrt`,
+               `contact_second`       AS `contactSecond`,
+               `contact_third`        AS `contactThird`,
+               `address_postal`       AS `addressPostal`,
+               `address_primary`      AS `addresPrimary`,
+               `address_secondary`    AS `addressSecondary`,
+               `admin_flag`           AS `isAdmin`,
+               `deleted_flag`         AS `isDeleted`,
+               `suspended_flag`       AS `isSuspended`,
+               `registered_at`        AS `registeredAt`,
+               `term_policy_at`       AS `termPolicyAt`,
+               `term_privacy_at`      AS `termPrivacyAt`,
+               `term_marketing_at`    AS `termMarketingAt`
+        FROM `study_bbs`.`users`
+        WHERE BINARY `nickname` = #{nickname} # 중괄호 내의 email과 호출하는 메서드의 @Param의 value값과 일치해야 함.
+        LIMIT 1
+    </select>
+
+    <select id="selectUserByContact"
+            resultType="com.whl.studybbs.entities.UserEntity">
+        SELECT `email`                AS `email`,
+               `password`             AS `password`,
+               `nickname`             AS `nickname`,
+               `name`                 AS `name`,
+               `contact_company_code` AS `contactCompanyCode`,
+               `contact_first`        AS `contactFisrt`,
+               `contact_second`       AS `contactSecond`,
+               `contact_third`        AS `contactThird`,
+               `address_postal`       AS `addressPostal`,
+               `address_primary`      AS `addresPrimary`,
+               `address_secondary`    AS `addressSecondary`,
+               `admin_flag`           AS `isAdmin`,
+               `deleted_flag`         AS `isDeleted`,
+               `suspended_flag`       AS `isSuspended`,
+               `registered_at`        AS `registeredAt`,
+               `term_policy_at`       AS `termPolicyAt`,
+               `term_privacy_at`      AS `termPrivacyAt`,
+               `term_marketing_at`    AS `termMarketingAt`
+        FROM `study_bbs`.`users`
+        WHERE BINARY `contact_first` = #{contactFirst}
+          AND BINARY `contact_second` = #{contactSecond}
+          AND BINARY `contact_third` = #{contactThird}# 중괄호 내의 email과 호출하는 메서드의 @Param의 value값과 일치해야 함.
+        LIMIT 1
+    </select>
+
+    <select id="selectEmailAuthByEmailCodeSalt"
+            resultType="com.whl.studybbs.entities.EmailAuthEntity">
+        SELECT email         AS `email`,
+               code          AS `code`,
+               salt          AS `salt`,
+               created_at    AS `createdAt`,
+               expires_at    AS `expiresAt`,
+               verified_flag AS `isVerified`
+        FROM `study_bbs`.`email_auths`
+        WHERE BINARY `email` = #{email}
+          AND BINARY `code` = #{code}
+          AND BINARY `salt` = #{salt}
+    </select>
+
+    <update id="updateEmailAuth"
+            parameterType="com.whl.studybbs.entities.EmailAuthEntity">
+        UPDATE `study_bbs`.`email_auths`
+        SET `verified_flag` = #{isVerified},
+            `created_at`    = #{createdAt},
+            `expires_at`    = #{expiresAt}
+        WHERE BINARY `email` = #{email}
+          AND BINARY `code` = #{code}
+          AND BINARY `salt` = #{salt}
+        LIMIT 1
+    </update>
+
+    <select id="selectContactCompanies"
+            resultType="com.whl.studybbs.entities.ContactCompanyEntity">
+        SELECT `code` AS `code`,
+               `text` AS `text`
+        FROM `study_bbs`.`contact_companies`
+        ORDER BY `code`
+    </select>
+
+    <insert id="insertUser"
+            parameterType="com.whl.studybbs.entities.UserEntity">
+        INSERT INTO `study_bbs`.`users` (`email`, `password`, `nickname`, `name`, `contact_company_code`, `contact_first`, `contact_second`, `contact_third`, `address_postal`, `address_primary`, `address_secondary`, `admin_flag`,`deleted_flag`,`suspended_flag`,`registered_at`,`term_policy_at`,`term_privacy_at`,`term_marketing_at`)
+        VALUES (#{email}, #{password}, #{nickname}, #{name}, #{contactCompanyCode}, #{contactFirst}, #{contactSecond}, #{contactThird}, #{addressPostal}, #{addressPrimary}, #{addressSecondary}, #{isAdmin}, #{isDeleted}, #{isSuspended}, #{registeredAt}, #{termPolicyAt}, #{termPrivacyAt}, #{termMarketingAt})
+    </insert>
+
+    <update id="updateUser"
+            parameterType="com.whl.studybbs.entities.UserEntity">
+        UPDATE `study_bbs`.`users`
+        SET `password` = #{password}
+        WHERE BINARY `email` = #{email}
+    </update>
+
+</mapper>

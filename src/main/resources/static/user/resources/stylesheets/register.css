@@ -1,0 +1,319 @@
+@charset "UTF-8";
+
+#main > .content-container.title-container {
+    padding: 2rem 0;
+}
+
+#main > .content-container.title-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 1.25rem;
+    justify-content: flex-start;
+}
+
+#main > .content-container.title-container > .title {
+    font-size: 2.5rem;
+}
+
+#main > .content-container.title-container > .subtitle {
+    color: #808b96;
+    font-size: 2rem;
+    display: none;
+}
+
+#main[data-step="1"] > .content-container.title-container > .subtitle[data-step="1"],
+#main[data-step="2"] > .content-container.title-container > .subtitle[data-step="2"],
+#main[data-step="3"] > .content-container.title-container > .subtitle[data-step="3"]{
+    display: block;
+}
+
+#main > .content-container.title-container > .spring {
+    flex: 1;
+}
+
+#main > .content-container.title-container > .step-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#main > .content-container.title-container > .step-container > .step {
+    width: 2rem;
+    height: 2rem;
+    background-color: #ffffff;
+    border-radius: 50%;
+    color: #abb2b9;
+    font-size: 1.125rem;
+    font-weight: 600;
+
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#main[data-step="1"] > .content-container.title-container > .step-container > .step[data-step="1"],
+#main[data-step="2"] > .content-container.title-container > .step-container > .step[data-step="2"],
+#main[data-step="3"] > .content-container.title-container > .step-container > .step[data-step="3"] {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+#main > .content-container.title-container > .step-container > .line {
+    width: 0.5rem;
+    height: 0.25rem;
+    background-color: #ffffff;
+}
+
+#main > .content-container.title-container > .step-container > .step + .line {
+    /* line 그라데이션 */
+    /*background: linear-gradient(90deg, #3498db 0%, #ffffff 75%);*/
+}
+
+#main > .content-container.step-container {
+    display: none;
+
+    align-items: stretch;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#main[data-step="1"] > .content-container.step-container[data-step="1"],
+#main[data-step="2"] > .content-container.step-container[data-step="2"],
+#main[data-step="3"] > .content-container.step-container[data-step="3"] {
+    /* 나중에 밑에 내용을 더 적을거라서 block 말고 flex를 줌 */
+    /* 표시할 내용이 해당 태그 하나라면 block을 해도 상관없음 */
+    display: flex;
+}
+
+#main > .step-container.term {
+    gap: 1rem;
+}
+
+#main > .step-container > .content {
+    max-width: 30rem;
+    align-self: center;
+
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-content: flex-start;
+}
+
+#main > .step-container > .content > .title {
+    color: #808b96;
+    font-size: 2.25rem;
+}
+
+#main > .step-container > .content > .message {
+    text-align: center;
+}
+
+#main > .step-container.term > .term-container {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#main > .step-container.term > .term-container > .label {
+    margin-bottom: 0.25rem;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#main > .step-container.term > .term-container > .label > .title {
+    font-size: 1.375rem;
+    margin-bottom: 0.375rem;
+}
+
+#main > .step-container.term > .term-container > .label > .common-field {
+    height: 10rem;
+}
+
+#main > .step-container.info > .info-container {
+    width: 100%;
+    max-width: 30rem;
+    align-self: center;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+#main > .step-container.info > .info-container > .label {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
+#main > .step-container.info > .info-container > .label > .horizontal {
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
+#main > .step-container.info > .info-container > .label > .horizontal > .big {
+    flex: 1;
+}
+
+
+
+#main > .step-container.info > .info-container > .label > .text {
+    color: #808b96;
+    font-size: 1.125rem;
+    margin-top: 0.5rem;
+}
+
+#main > .step-container.info > .info-container > .label.email > .complete {
+    max-height: 0;
+    background-color: #85c1e9;
+    border-radius: 0.375rem;
+    color: #1b4f72;
+    margin-top: -0.5rem;
+    overflow: hidden;
+    padding: 0 1rem;
+    transition-duration: 250ms;
+    transition-property: max-height, margin-top, padding;
+    transition-timing-function: ease;
+}
+
+#main > .step-container.info > .info-container > .label.email > .complete.visible {
+    margin-top: 0;
+    max-height: 2.5rem;
+    padding: 0.625rem 1rem;
+}
+
+#main > .step-container.info > .info-container > .label.name-contact > .contact > input.common-field {
+    width: 3rem;
+    text-align: center;
+}
+
+
+#main > .button-container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+#main > .button-container > .button {
+    appearance: none;
+    background-color: #ffffff;
+    border: 0.0625rem solid transparent;
+    border-radius: 0.375rem;
+    color: inherit;
+    cursor: pointer;
+    filter: brightness(100%);
+    font: inherit;
+    font-size: 1.375rem;
+    letter-spacing: 0.0625rem;
+    padding: 0.75rem 2.5rem;
+    text-decoration: none;
+    transition-duration: 250ms;
+    transition-property: filter ;
+    transition-timing-function: ease;
+    user-select: none;
+}
+
+#main > .button-container > .button:hover {
+    filter: brightness(95%);
+}
+
+#main > .button-container > .button.cancel {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+    color: #ffffff;
+}
+
+#main > .button-container > .button.prev {
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+
+#main > .button-container > .button.complete,
+#main > .button-container > .button.next {
+    background-color: #28b463;
+    border-color: #28b463;
+    color: #ffffff;
+}
+
+#main > .button-container > .button.complete {
+    display: none;
+}
+
+#main[data-step="3"] > .button-container > .button.complete {
+    display: block;
+}
+
+#main[data-step="1"] > .button-container > .button.prev,
+#main[data-step="3"] > .button-container > .button.next,
+#main[data-step="3"] > .button-container > .button.cancel,
+#main[data-step="3"] > .button-container > .button.prev {
+    display: none;
+}
+
+#addressFind {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(0.25rem);
+    background-color: #17202aa0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    transition-duration: 250ms;
+    transition-property: opacity;
+    transition-timing-function: ease;
+    z-index: 9;
+}
+
+#addressFind.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#addressFind > .close {
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 2.5rem;
+    cursor: pointer;
+    position: absolute;
+}
+
+#addressFind > .modal {
+    top: calc(50% + 1rem);
+    left: 50%;
+    width: 25rem;
+    height: 30rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 1rem 0.0625rem #17202a50;
+    overflow: hidden;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition-duration: 250ms;
+    transition-property: top;
+    transition-timing-function: ease;
+}
+
+#addressFind.visible > .modal {
+    top: 50%;
+}

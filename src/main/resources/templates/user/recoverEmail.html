@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>이메일 찾기</title>
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
+    <link rel="stylesheet" th:href="@{/user/resources/stylesheets/recoverEmail.css}">
+    <script defer th:src="@{/resources/scripts/common.js}"></script>
+    <script defer th:src="@{/user/resources/scripts/recoverEmail.js}"></script>
+</head>
+<body>
+
+<th:block th:replace="~{fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments.html :: header}"></th:block>
+<main class="content-container-wrapper" id="main">
+    <div class="content-container">
+        <div class="title-container">
+            <h1 class="title">이메일 찾기</h1>
+        </div>
+        <form class="recover-email-form" id="recoverEmailForm" th:with="userRegex = ${T(com.whl.studybbs.regexes.UserRegex)}">
+            <span class="message">회원가입 시 입력했던 실명과 연락처를 통해 이메일을 찾을 수 있습니다. 실명과 연락처를 정확히 입력해 주세요.</span>
+            <label class="label name">
+                <span class="text">이름</span>
+                <input autofocus class="common-field" maxlength="5" name="name" placeholder="이름" type="text" th:data-regex="${userRegex.NAME.expression}">
+            </label>
+            <label class="label contact">
+                <span class="text">연락처</span>
+                <span class="horizontal contact-container">
+                    <input maxlength="4" name="contactFirst" type="text" class="common-field" placeholder="010" th:data-regex="${userRegex.CONTACT_FIRST.expression}">
+                    <input maxlength="4" name="contactSecond" type="text" class="common-field" placeholder="0000" th:data-regex="${userRegex.CONTACT_SECOND.expression}">
+                    <input maxlength="4" name="contactThird" type="text" class="common-field" placeholder="0000"  th:data-regex="${userRegex.CONTACT_THIRD.expression}">
+                </span>
+            </label>
+            <input type="submit" value="이메일 찾기" class="common-button">
+        </form>
+    </div>
+</main>
+<th:block th:replace="~{fragments.html :: footer}"></th:block>
+</body>
+</html>

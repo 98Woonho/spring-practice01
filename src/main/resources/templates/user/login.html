@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>로그인</title>
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
+    <link rel="stylesheet" th:href="@{/user/resources/stylesheets/login.css}">
+    <script defer th:src="@{/resources/scripts/common.js}"></script>
+    <script defer th:src="@{/user/resources/scripts/login.js}"></script>
+</head>
+<body>
+
+<th:block th:replace="~{fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments.html :: header}"></th:block>
+<main class="content-container-wrapper" id="main" th:with="userRegex = ${T(com.whl.studybbs.regexes.UserRegex)}">
+    <div class="content-container">
+        <div class="title-container">
+            <h1 class="title">로그인</h1>
+        </div>
+        <form class="login-form" id="loginForm">
+            <label class="label">
+                <span class="text">이메일</span>
+                <input type="email" maxlength="50" placeholder="이메일(user@sample.com)" name="email" th:data-regex="${userRegex.EMAIL.expression}" class="common-field">
+            </label>
+            <label class="label">
+                <span class="text">비밀번호</span>
+                <input type="password" maxlength="50" placeholder="비밀번호" name="password" th:data-regex="${userRegex.PASSWORD.expression}" class="common-field">
+            </label>
+            <label class="common-check">
+                <input type="checkbox" name="remember">
+                <span class="_box"></span>
+                <span class="_text">다음부터 이메일을 기억합니다.</span>
+            </label>
+            <input type="submit" value="로그인" class="common-button">
+            <ul class="menu">
+                <li class="item">
+                    <span class="text">아직 계정이 없으신가요?</span>
+                    <a th:href="@{/user/register}" class="link">회원가입하기</a>
+                </li>
+                <li class="item">
+                    <span class="text">이메일을 잊어버리셨나요?</span>
+                    <a th:href="@{/user/recoverEmail}" class="link">이메일 찾기</a>
+                </li>
+                <li class="item">
+                    <span class="text">비밀번호를 잊어버리셨나요?</span>
+                    <a th:href="@{/user/resetPassword}" class="link">비밀번호 재설정하기</a>
+                </li>
+            </ul>
+        </form>
+    </div>
+</main>
+<th:block th:replace="~{fragments.html :: footer}"></th:block>
+</body>
+</html>

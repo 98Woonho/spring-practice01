@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whl.studybbs.mappers.ArticleMapper">
+    <insert id="insertArticle"
+            parameterType="com.whl.studybbs.entities.ArticleEntity"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index">
+        INSERT INTO `study_bbs`.`articles` (`board_code`, `user_email`, `title`, `content`, `view`,
+                                            `written_at`,
+                                            `modified_at`, `deleted_flag`)
+        VALUES (#{boardCode}, #{userEmail}, #{title}, #{content}, #{view}, #{writtenAt}, #{modifiedAt},
+                #{isDeleted})
+    </insert>
+
+    <insert id="insertImage"
+            parameterType="com.whl.studybbs.entities.ImageEntity"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index">
+        INSERT INTO `study_bbs`.`images` (`name`, `type`, `size`, `data`, `user_email`, `created_at`)
+        VALUES (#{name}, #{type}, #{size}, #{data}, #{userEmail}, #{createdAt})
+    </insert>
+
+    <insert id="insertComment"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.whl.studybbs.entities.CommentEntity">
+        INSERT INTO `study_bbs`.`comments` (`article_index`, `user_email`, `comment_index`, `content`, `written_at`, `modified_at`, `deleted_flag`)
+        VALUES (#{articleIndex}, #{userEmail}, #{commentIndex}, #{content} ,#{writtenAt}, #{modifiedAt}, #{isDeleted})
+    </insert>
+
+    <insert id="insertFile"
+            parameterType="com.whl.studybbs.entities.FileEntity"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index">
+        INSERT INTO `study_bbs`.`files` (`name`, `type`, `size`, `data`, `article_index`, `user_email`, `created_at`)
+        VALUES (#{name}, #{type}, #{size}, #{data}, #{articleIndex}, #{userEmail}, #{createdAt})
+    </insert>
+
+    <select id="selectImageByIndex"
+            resultType="com.whl.studybbs.entities.ImageEntity">
+        SELECT `index` AS `index`,
+               `name` AS `name`,
+               `type` AS `type`,
+               `size` AS `size`,
+               `data` AS `data`,
+               `user_email` AS `userEmail`,
+               `created_at` AS `createdAt`
+        FROM `study_bbs`.`images`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
+    <select id="selectFileByIndexNoData"
+            resultType="com.whl.studybbs.entities.FileEntity">
+        SELECT `index`         AS `index`,
+               `name`          AS `name`,
+               `type`          AS `type`,
+               `size`          AS `size`,
+               `article_index` AS `articleIndex`,
+               `user_email`    AS `userEmail`,
+               `created_at`    AS `createdAt`
+        FROM `study_bbs`.`files`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
+    <update id="updateFileNoData"
+            parameterType="com.whl.studybbs.entities.FileEntity">
+        UPDATE `study_bbs`.`files`
+        SET `name` = #{name},
+            `type` = #{type},
+            `size` = #{size},
+            `article_index` = #{articleIndex},
+            `user_email` = #{userEmail},
+            `created_at` = #{createdAt}
+        WHERE BINARY `index` = #{index}
+        LIMIT 1
+    </update>
+
+    <update id="updateArticle"
+            parameterType="com.whl.studybbs.entities.ArticleEntity">
+        UPDATE `study_bbs`.`articles`
+        SET `board_code` = #{boardCode},
+            `user_email` = #{userEmail},
+            `title` = #{title},
+            `content` = #{content},
+            `view` = #{view},
+            `written_at` = #{writtenAt},
+            `modified_at` = #{modifiedAt},
+            `deleted_flag` = #{isDeleted}
+        WHERE BINARY `index` = #{index}
+        LIMIT 1
+    </update>
+
+    <select id="selectArticleByIndex"
+            resultType="com.whl.studybbs.entities.ArticleEntity">
+        SELECT `index`        AS `index`,
+               `board_code`   AS `boardCode`,
+               `user_email`   AS `userEmail`,
+               `title`        AS `title`,
+               `content`      AS `content`,
+               `view`         AS `view`,
+               `written_at`   AS `writtenAt`,
+               `modified_at`  AS `modifiedAt`,
+               `deleted_flag` AS `isDeleted`
+        FROM `study_bbs`.`articles`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
+    <select id="selectArticleDtoByIndex"
+            resultType="com.whl.studybbs.dtos.ArticleDto">
+        SELECT `article`.`index`        AS `index`,
+               `article`.`board_code`   AS `boardCode`,
+               `article`.`user_email`   AS `userEmail`,
+               `article`.`title`        AS `title`,
+               `article`.`content`      AS `content`,
+               `article`.`view`         AS `view`,
+               `article`.`written_at`   AS `writtenAt`,
+               `article`.`modified_at`  AS `modifiedAt`,
+               `article`.`deleted_flag` AS `isDeleted`,
+               `user`.`nickname`        AS `userNickname`
+        FROM `study_bbs`.`articles` AS `article`
+                 LEFT JOIN `study_bbs`.`users` AS `user` ON `article`.`user_email` = `user`.`email`
+        WHERE `article`.`index` = #{index}
+        LIMIT 1
+    </select>
+
+    <select id="selectFilesByArticleIndexNoData"
+            resultType="com.whl.studybbs.entities.FileEntity">
+        SELECT `index`         AS `index`,
+               `name`          AS `name`,
+               `type`          AS `type`,
+               `size`          AS `size`,
+               `article_index` AS `articleIndex`,
+               `user_email`    AS `userEmail`,
+               `created_at`    AS `createdAt`
+        FROM `study_bbs`.`files`
+        WHERE `article_index` = #{articleIndex}
+    </select>
+
+    <select id="selectFileByIndex"
+            resultType="com.whl.studybbs.entities.FileEntity">
+        SELECT `index`         AS `index`,
+               `name`          AS `name`,
+               `type`          AS `type`,
+               `size`          AS `size`,
+               `data`          AS `data`,
+               `article_index` AS `articleIndex`,
+               `user_email`    AS `userEmail`,
+               `created_at`    AS `createdAt`
+        FROM `study_bbs`.`files`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
+    <select id="selectCommentDtosByArticleIndex"
+            resultType="com.whl.studybbs.dtos.CommentDto">
+        SELECT `comment`.`index`                         AS `index`,
+               `comment`.`article_index`                 AS `articleIndex`,
+               `comment`.`user_email`                    AS `userEmail`,
+               `comment`.`comment_index`                 AS `commentIndex`,
+               `comment`.`content`                       AS `content`,
+               `comment`.`written_at`                    AS `writtenAt`,
+               `comment`.`modified_at`                   AS `modifiedAt`,
+               `comment`.`deleted_flag`                  AS `isDeleted`,
+               `user`.`nickname`                         AS `userNickname`,
+               (SELECT COUNT(0) # 행의 개수를 셈
+                FROM `study_bbs`.`comment_likes` AS `commentLike`
+                WHERE `comment`.`index` = `commentLike`.`comment_index`
+                  AND `commentLike`.`like_flag` = TRUE)  AS `likeCount`,
+               (SELECT COUNT(0)
+                FROM `study_bbs`.`comment_likes` AS `commentLike`
+                WHERE `comment`.`index` = `commentLike`.`comment_index`
+                  AND `commentLike`.`like_flag` = FALSE) AS `dislikeCount`,
+                IF(`commentLike`.`like_flag` IS NULL, 0,
+                    IF(`commentLike`.`like_flag` = TRUE, 1, -1)) AS `likeStatus`
+        FROM `study_bbs`.`comments` AS `comment`
+                 LEFT JOIN `study_bbs`.`users` AS `user` ON `comment`.`user_email` = `user`.`email`
+                 LEFT JOIN `study_bbs`.`comment_likes` AS `commentLike`
+                           ON `comment`.`index` = `commentLike`.`comment_index` AND
+                              `commentLike`.`user_email` = #{userEmail}
+        WHERE `article_index` = #{articleIndex}
+        ORDER BY `comment`.`index`
+    </select>
+
+    <select id="selectCommentDtoByPrimary"
+            resultType="com.whl.studybbs.dtos.CommentDto">
+        SELECT `comment`.`index`                         AS `index`,
+               `comment`.`article_index`                 AS `articleIndex`,
+               `comment`.`user_email`                    AS `userEmail`,
+               `comment`.`comment_index`                 AS `commentIndex`,
+               `comment`.`content`                       AS `content`,
+               `comment`.`written_at`                    AS `writtenAt`,
+               `comment`.`modified_at`                   AS `modifiedAt`,
+               `comment`.`deleted_flag`                  AS `isDeleted`,
+               `user`.`nickname`                         AS `userNickname`,
+               (SELECT COUNT(0) # 행의 개수를 셈
+                FROM `study_bbs`.`comment_likes` AS `commentLike`
+                WHERE `comment`.`index` = `commentLike`.`comment_index`
+                  AND `commentLike`.`like_flag` = TRUE)  AS `likeCount`,
+               (SELECT COUNT(0)
+                FROM `study_bbs`.`comment_likes` AS `commentLike`
+                WHERE `comment`.`index` = `commentLike`.`comment_index`
+                  AND `commentLike`.`like_flag` = FALSE) AS `dislikeCount`,
+               IF(`commentLike`.`like_flag` IS NULL, 0,
+                  IF(`commentLike`.`like_flag` = TRUE, 1, -1)) AS `likeStatus`
+        FROM `study_bbs`.`comments` AS `comment`
+                 LEFT JOIN `study_bbs`.`users` AS `user` ON `comment`.`user_email` = `user`.`email`
+                 LEFT JOIN `study_bbs`.`comment_likes` AS `commentLike`
+                           ON `comment`.`index` = `commentLike`.`comment_index` AND
+                              `commentLike`.`user_email` = #{userEmail}
+        WHERE `comment`.`index` = ${commentIndex}
+        LIMIT 1
+    </select>
+
+    <select id="selectCommentLikeByPrimary"
+            resultType="com.whl.studybbs.entities.CommentLikeEntity">
+        SELECT `user_email`    AS `userEmail`,
+               `comment_index` AS `commentIndex`,
+               `like_flag`     AS `isLike`
+        FROM `study_bbs`.`comment_likes`
+        WHERE `comment_index` = #{commentIndex}
+          AND BINARY `user_email` = #{userEmail}
+        LIMIT 1
+    </select>
+
+    <delete id="deleteCommentLikeByPrimary">
+        DELETE
+        FROM `study_bbs`.`comment_likes`
+        WHERE `comment_index` = #{commentIndex}
+          AND BINARY `user_email` = #{userEmail}
+        LIMIT 1
+    </delete>
+
+    <insert id="insertCommentLike"
+            parameterType="com.whl.studybbs.entities.CommentLikeEntity">
+        INSERT INTO `study_bbs`.`comment_likes` (`user_email`, `comment_index`, `like_flag`)
+        VALUES (#{userEmail}, #{commentIndex}, #{isLike})
+        ON DUPLICATE KEY UPDATE `like_flag` = #{isLike} # 기본키가 중복되는 값이 insert 되면 like_flag 열만 insert
+    </insert>
+
+    <select id="selectCommentByIndex"
+            resultType="com.whl.studybbs.entities.CommentEntity">
+        SELECT `index`         AS `index`,
+               `article_index` AS `articleIndex`,
+               `user_email`    AS `userEmail`,
+               `comment_index` AS `commentIndex`,
+               `content`       AS `content`,
+               `written_at`    AS `writtenAt`,
+               `modified_at`   AS `modifiedAt`,
+               `deleted_flag`  AS `isDeleted`
+        FROM `study_bbs`.`comments`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
+    <update id="updateComment"
+            parameterType="com.whl.studybbs.entities.CommentEntity">
+        UPDATE `study_bbs`.`comments`
+        SET `article_index` = #{articleIndex},
+            `user_email` = #{userEmail},
+            `comment_index` = #{commentIndex},
+            `content` = #{content},
+            `written_at` = #{writtenAt},
+            `modified_at` = #{modifiedAt},
+            `deleted_flag` = #{isDeleted}
+        WHERE `index` = #{index}
+        LIMIT 1
+    </update>
+
+    <delete id="deleteFileByIndex">
+        DELETE
+        FROM `study_bbs`.`files`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </delete>
+</mapper>

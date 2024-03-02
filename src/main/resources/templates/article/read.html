@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="_article-status" th:content="${article != null && !article.isDeleted()}">
+    <meta name="_user-status" th:content="${session.user != null}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시글 읽기</title>
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
+    <link rel="stylesheet" th:href="@{/article/resources/stylesheets/read.css}">
+    <link rel="stylesheet" th:href="@{/article/resources/libraries/ckeditor/ckeditor.css}">
+    <script defer th:src="@{/resources/scripts/common.js}"></script>
+    <script defer th:src="@{/article/resources/scripts/read.js}"></script>
+</head>
+<body>
+<th:block th:replace="~{fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments.html :: header}"></th:block>
+<main class="content-container-wrapper" id="main" th:if="${article != null && !article.isDeleted()}">
+    <div class="content-container">
+        <div class="title-container">
+            <h1 class="title" th:text="${board.getText()}"></h1>
+        </div>
+        <table id="articleTable" class="table" th:data-index="${article.getIndex()}"
+               th:data-board-code="${board.getCode()}">
+            <thead>
+            <tr>
+                <th>제목</th>
+                <td class="full" colspan="3" th:text="${article.getTitle()}"></td>
+            </tr>
+            <tr>
+                <th>작성자</th>
+                <td class="half" th:text="${article.getUserNickname()}"></td>
+                <th>조회수</th>
+                <td class="half" th:text="${article.getView()}"></td>
+            </tr>
+            <tr>
+                <th>작성 일시</th>
+                <td class="half" th:text="${#dates.format(article.getWrittenAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <th th:if="${article.getModifiedAt() != null}">수정 일시</th>
+                <td class="half" th:if="${article.getModifiedAt() != null}"
+                    th:text="${#dates.format(article.getModifiedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <!-- utext : HTML 태그들을 문자열이 아닌 실제 HTML 태그로 받아들임-->
+                <td class="content ck-content" colspan="4" th:utext="${article.getContent()}"></td>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr>
+                <th>첨부 파일</th>
+                <td class="file-empty" colspan="3" th:if="${files == null || files.length == 0}">첨부 파일이 없습니다.</td>
+                <td class="file-wrapper" colspan="3" th:if="${files != null && files.length > 0}">
+                    <ul class="list">
+                        <li class="item" th:each="file : ${files}">
+                            <a class="link" th:href="@{/article/file (index=${file.getIndex()})}">
+                                <img th:src="@{/article/resources/images/read.file.icon.png}" alt="" class="icon">
+                                <span class="name" th:text="${file.getName()}"></span>
+                            </a>
+                            <span class="size">(<th:block
+                                    th:text="${T(java.lang.Math).floor(file.getSize() / 1024.00 * 100) / 100}"></th:block>KB)</span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <!-- td한테 display: flex 주면 깨져서 div 하나 만듬-->
+                <td colspan="4">
+                    <div class="bottom-button-container"
+                         th:with="isAuth = ${session.user != null && (session.user.getEmail().equals(article.getUserEmail()) || session.user.isAdmin())}, searchCriterion = ${#request.getParameter('criterion')}, searchKeyword = ${#request.getParameter('keyword')}">
+                        <!-- #request.getParameter('a') : 주소창에서 a라는 속성의 값을 가져옴 -->
+                        <a href="#" class="common-button"
+                           th:href="@{/board/list (code=${board.getCode()}, page=${page})}"
+                           th:if="${searchCriterion == null || searchKeyword == null}">목록</a>
+                        <a href="#" class="common-button"
+                           th:href="@{/board/list (code=${board.getCode()}, page=${page}, criterion = ${searchCriterion}, keyword = ${searchKeyword})}"
+                           th:if="${searchCriterion != null && searchKeyword != null}">목록</a>
+                        <span class="spring"></span>
+                        <a class="common-button" rel="modify" th:if="${isAuth}"
+                           th:href="@{/article/modify(index=${article.getIndex()})}">수정</a>
+                        <div class="common-button" rel="delete" th:if="${isAuth}">삭제</div>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <form id="commentForm" class="comment-form"
+              th:with="commentRegex = ${T(com.whl.studybbs.regexes.CommentRegex)}">
+            <input hidden name="articleIndex" type="hidden" th:value="${article.getIndex()}">
+            <label class="label">
+                <span class="text">
+                    <span class="left">댓글 (<span rel="count">11</span>)</span>
+                    <span class="right" rel="refresh">다시 불러오기</span>
+                </span>
+                <span class="horizontal">
+                    <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
+                              class="common-field big" th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                    <input type="submit" value="댓글 쓰기" class="common-button">
+                </span>
+            </label>
+        </form>
+        <table class="comment-table" id="commentTable">
+            <thead class="loading">
+            <tr>
+                <td>댓글을 불러오고 있습니다...</td>
+            </tr>
+            </thead>
+            <thead class="error">
+            <tr>
+                <td>댓글을 불러오지 못하였습니다. 잠시 후 다시 불러오기를 클릭해 주세요.</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <div class="comment">
+                        <div class="head">
+                            <span class="nickname" rel="nickname">닉네임123</span>
+                            <span class="written-at" rel="writtenAt">2023-11-24 17:24:55</span>
+                            <span class="spring"></span>
+                            <span class="action" rel="modify">수정</span>
+                            <span class="action" rel="delete">삭제</span>
+                            <span class="action" rel="modifyCancel">수정 취소</span>
+                        </div>
+                        <div class="body">
+                            <span class="content">댓글 내용</span>
+                            <form rel="modifyForm" class="modify-form">
+                                <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
+                                          class="common-field"></textarea>
+                                <input type="submit" value="댓글 수정" class="common-button">
+                            </form>
+                        </div>
+                        <div class="foot">
+                            <span class="vote" rel="vote" data-vote="up">
+                                <img alt="👍" class="icon" th:src="@{/article/resources/images/comment.vote.up.png}">
+                                <span class="value">173</span>
+                            </span>
+                            <span class="vote" rel="vote" data-vote="down">
+                                <img alt="👎" class="icon" th:src="@{/article/resources/images/comment.vote.down.png}">
+                                <span class="value">27</span>
+                            </span>
+                            <span class="spring"></span>
+                            <span class="action" rel="reply">답글 달기</span>
+                            <span class="action" rel="replyCancel">답글 달기 취소</span>
+                        </div>
+                        <form class="reply-form" rel="replyForm">
+                            <label class="label">
+                                <textarea class="common-field" maxlength="1000" name="content"
+                                          placeholder="답글을 입력해 주세요."></textarea>
+                            </label>
+                            <input class="common-button" type="submit" value="답글 달기">
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<th:block th:replace="~{fragments.html :: footer}"></th:block>
+</body>
+</html>

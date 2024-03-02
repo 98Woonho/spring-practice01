@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>fragment</title>
+</head>
+<body>
+
+<th:block th:fragment="common">
+    <div id="dialog">
+        <div class="modal" rel="modal">
+            <div class="title" rel="title">제목</div>
+            <div class="content" rel="content">내용</div>
+            <div class="button-container" rel="buttonContainer">
+                <div class="button">버튼1</div>
+                <div class="button">버튼2</div>
+            </div>
+        </div>
+    </div>
+    <div id="loading">
+        <img th:src="@{/resources/images/loading.png}" alt="" class="icon">
+        <span class="text">잠시만 기다려 주세요...</span>
+    </div>
+</th:block>
+
+<header class="content-container-wrapper" id="header" th:fragment="header">
+    <ul class="content-container menu">
+        <li class="item logo">
+            <a th:href="@{/}" class="link">BBS</a>
+        </li>
+        <!-- boards의 경로 지정 -->
+<!--        /*@thymesVar id="boards" type="com.whl.studybbs.entities.BoardEntity[]"*/-->
+        <li class="item board" th:each="board : ${boards}">
+            <a href="#" class="link" th:text="${board.getText()}"></a>
+        </li>
+        <li class="spring"></li>
+        <li class="item user" th:if="${session.user == null}">
+            <!-- 로그인 후에 이전 페이지로 리다이렉션 하기 위한 URL 속성 -->
+            <a th:href="@{/user/login (r = ${#request.getRequestURI() + '?' + #request.getQueryString()})}" class="link">
+                <img th:src="@{/resources/images/header.user-login.png.png}" alt="" class="icon">
+                <span class="text">로그인</span>
+            </a>
+        </li>
+        <li class="item user" th:if="${session.user == null}">
+            <a th:href="@{/user/register}" class="link">
+                <img th:src="@{/resources/images/header.user-register.png.png}" alt="" class="icon">
+                <span class="text">회원가입</span>
+            </a>
+        </li>
+        <li class="item user" th:if="${session.user != null}">
+            <a th:href="@{/user/logout}" class="link">
+                <img th:src="@{/resources/images/header.user-logout.png}" alt="" class="icon">
+                <span class="text">로그아웃</span>
+            </a>
+        </li>
+    </ul>
+</header>
+
+<footer class="content-container-wrapper" id="footer" th:fragment="footer">
+    <div class="content-container">&copy; 2023 WHL All Rights Reserved.</div>
+</footer>
+
+</body>
+</html>

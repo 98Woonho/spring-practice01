@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="_allowed-status" th:content="${article != null}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시글 수정</title>
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
+    <link rel="stylesheet" th:href="@{/article/resources/stylesheets/modify.css}">
+    <script defer th:src="@{/resources/scripts/common.js}"></script>
+    <script th:src="@{/article/resources/libraries/ckeditor/ckeditor.js}"></script>
+    <script defer th:src="@{/article/resources/scripts/modify.js}"></script>
+</head>
+<body>
+<th:block th:replace="~{fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments.html :: header}"></th:block>
+<main class="content-container-wrapper" id="main" th:if="${article != null}">
+    <div class="content-container">
+        <div class="title-container">
+            <h1 class="title">게시글 수정 -
+                <th:block th:text="${board.getText()}"></th:block>
+            </h1>
+        </div>
+        <form class="modify-form" id="modifyForm" th:with="articleRegex = ${T(com.whl.studybbs.regexes.ArticleRegex)}">
+            <input type="hidden" th:value="${article.getIndex()}" name="index">
+            <label class="label">
+                <span class="title">제목</span>
+                <input autofocus type="text" maxlength="100" name="title" placeholder="제목을 입력해 주세요" class="common-field"
+                       th:data-regex="${articleRegex.TITLE.expression}" th:value="${article.getTitle()}">
+            </label>
+            <label class="label">
+                <span class="text">내용</span>
+                <textarea class="common-field" maxlength="10000" placeholder="내용을 입력해 주세요." name="content" rows="15"
+                          th:text="${article.getContent()}"></textarea>
+            </label>
+
+            <!-- div 말고 label을 사용하면 부모인 label도 자식의 onclick에 반응하기 때문 -->
+            <div class="file-wrapper">
+                <input hidden name="file" type="file">
+                <span class="text">첨부파일</span>
+                <div class="files">
+                    <ul class="list" rel="fileList">
+                        <li class="item complete" rel="item" th:each="file : ${files}" th:data-index="${file.getIndex()}">
+                            <span class="progress" rel="progress"></span>
+                            <span class="text-container">
+                                <span class="name" th:title="${file.getName()}" th:text="${file.getName()}"></span>
+                                <!-- toLocaleString() : 숫자에 천 단위로 쉼표 붙여줌-->
+                                <span class="size"><th:block th:text="${T(java.lang.Math).floor(file.getSize() / 1024.0 * 100) / 100}"></th:block>KB</span>
+                            </span>
+                            <a rel="delete" class="common-button">삭제</a>
+                        </li>
+                    </ul>
+                    <button class="common-button" name="fileAdd" title="첨부파일 추가">
+                        <img alt="+" class="icon"
+                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAe0lEQVR4nGNgGAWjYKgC3S2ZgpqbU2xBGMSmuwPUtiR7aGxJ/g/CIPaoAxhGo4DeQG00EW6hYTbU3ZIpCDIUH1bfklwNcwCITUg9SYWV5uYUW5jh1MIgM4eOA3QHOgqIAaPZUG20INoy2h5IHuEtIt2BbpSOglHAQCUAADxtKVyZg+8tAAAAAElFTkSuQmCC">
+                    </button>
+                </div>
+            </div>
+            <div class="button-container">
+                <a class="common-button" th:href="@{/article/read (index = ${article.getIndex()})}">돌아가기</a>
+                <span class="spring"></span>
+                <input type="submit" value="작성하기" class="common-button">
+            </div>
+        </form>
+    </div>
+</main>
+<th:block th:replace="~{fragments.html :: footer}"></th:block>
+</body>
+</html>

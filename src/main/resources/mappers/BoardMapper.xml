@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whl.studybbs.mappers.BoardMapper">
+
+    <select id="selectBoards"
+            resultType="com.whl.studybbs.entities.BoardEntity">
+        SELECT `code`             AS `code`,
+               `text`             AS `text`,
+               `order`            AS `order`,
+               `admin_write_flag` AS `isAdminWrite`
+        FROM `study_bbs`.`boards`
+        ORDER BY `order`
+    </select>
+
+    <select id="selectBoardByCode"
+            resultType="com.whl.studybbs.entities.BoardEntity">
+        SELECT `code`             AS `code`,
+               `text`             AS `text`,
+               `order`            AS `order`,
+               `admin_write_flag` AS `isAdminWrite`
+        FROM `study_bbs`.`boards`
+        WHERE BINARY `code` = #{code}
+        LIMIT 1
+    </select>
+
+    <select id="selectArticleDtosByPage"
+            resultType="com.whl.studybbs.dtos.ArticleDto">
+        SELECT `article`.`index` AS `index`,
+        `article`.`board_code` AS `boardCode`,
+        `article`.`user_email` AS `userEmail`,
+        `article`.`title` AS `title`,
+        `article`.`content` AS `content`,
+        `article`.`view` AS `view`,
+        `article`.`written_at` AS `writtenAt`,
+        `article`.`modified_at` AS `modifiedAt`,
+        `article`.`deleted_flag` AS `isDeleted`,
+        `user`.`nickname` AS `userNickname`
+        FROM `study_bbs`.`articles` AS `article`
+        LEFT JOIN `study_bbs`.`users` AS `user` ON `article`.`user_email` = `user`.`email`
+        WHERE BINARY `article`.`board_code` = #{board.code} /* BINARY는 문자열 구분 할 때 대소문자도 구분함 */
+        AND `article`.`deleted_flag` = FALSE
+        <if test="search != null and search.getCriterion().equals('content')">
+            AND (`article`.`title` LIKE CONCAT('%', #{search.keyword}, '%') OR `article`.`content` LIKE CONCAT('%',
+            #{search.keyword}, '%'))
+        </if>
+        <if test="search != null and search.getCriterion().equals('title')">
+            AND `article`.`title` LIKE CONCAT('%', ${search.keyword}, '%')
+        </if>
+        <if test="search != null and search.getCriterion().equals('nickname')">
+            AND BINARY `user`.`nickname` = ${search.keyword}
+        </if>
+        ORDER BY `article`.`index` DESC
+        LIMIT #{page.countPerPage} OFFSET #{page.queryOffset} /* OFFSET은 시작 위치를 나타냄 */
+    </select>
+
+    <select id="selectArticleCountByBoard"
+            resultType="int">
+        SELECT COUNT(0)
+        FROM `study_bbs`.`articles`
+        WHERE BINARY `board_code` = #{code}
+          AND `deleted_flag` = FALSE
+    </select>
+
+    <select id="selectArticleCountByBoardSearch"
+            resultType="int">
+        SELECT COUNT(0)
+        FROM `study_bbs`.`articles` AS `article`
+        LEFT JOIN `study_bbs`.`users` AS `user` ON `article`.`user_email` = `user`.`email`
+        WHERE BINARY `article`.`board_code` = #{board.code}
+        AND `article`.`deleted_flag` = FALSE
+        <!-- if 태그에 있는 test 속성에 따라서 WHERE 조건 추가 -->
+        <if test="search.getCriterion().equals('content')">
+            AND (`article`.`title` LIKE CONCAT('%', #{search.keyword}, '%') OR `article`.`content` LIKE CONCAT('%', #{search.keyword}, '%'))
+        </if>
+        <if test="search.getCriterion().equals('title')">
+            AND `article`.`title` LIKE CONCAT('%', ${search.keyword}, '%')
+        </if>
+        <if test="search.getCriterion().equals('nickname')">
+            AND BINARY `user`.`nickname` = ${search.keyword}
+        </if>
+    </select>
+</mapper>
